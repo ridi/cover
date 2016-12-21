@@ -59,24 +59,25 @@ abstract class BookCoverProvider
 		return false;
 	}
 
-	private function makeCache($output_file)
+	private function makeCache($output_file_path)
 	{
 		$tmp_filename = tempnam(\Env::$CACHE_BASE_DIR, 'cover_');
 		try {
-			@mkdir(dirname($output_file), 0755, true);
+			@mkdir(dirname($output_file_path), 0755, true);
 			$new_cover_path = $this->generate($tmp_filename);
 
-			if (@rename($new_cover_path, $output_file) || file_exists($output_file)) {
-				@unlink($tmp_filename);
-				return $output_file;
+			if (rename($new_cover_path, $output_file_path)) {
+				return $output_file_path;
 			} else {
-				throw new RidiErrorException('Failed to rename generated cover: ' . $new_cover_path . ' => ' . $output_file);
+				throw new RidiErrorException('Failed to rename generated cover: ' . $new_cover_path . ' => ' . $output_file_path);
 			}
 		} catch (\Exception $e) {
-			@unlink($tmp_filename);
 			trigger_error('[COVER] Failed to create: ' . $e->getMessage());
-			return null;
+		} finally {
+			@unlink($tmp_filename);
 		}
+
+		return null;
 	}
 
 	/**
