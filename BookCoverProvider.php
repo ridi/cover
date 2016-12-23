@@ -61,7 +61,7 @@ abstract class BookCoverProvider
 
 	private function makeCache($output_file_path)
 	{
-		$tmp_filename = tempnam(\Env::$CACHE_BASE_DIR, 'cover_');
+		$tmp_filename = tempnam(\Env::$CACHE_BASE_DIR, 'cover_' . time());
 		try {
 			@mkdir(dirname($output_file_path), 0755, true);
 			$new_cover_path = $this->generate($tmp_filename);
