@@ -63,9 +63,9 @@ abstract class BookCoverProvider
 	{
 		$tmp_filename = tempnam(\Env::$CACHE_BASE_DIR, 'cover_' . time());
 		try {
-			@mkdir(dirname($output_file_path), 0755, true);
 			$new_cover_path = $this->generate($tmp_filename);
 
+			@mkdir(dirname($output_file_path), 0755, true);
 			if (rename($new_cover_path, $output_file_path)) {
 				return $output_file_path;
 			} else {
