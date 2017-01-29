@@ -1,9 +1,10 @@
 {
-  "name": "ridibooks/cover-provider",
+  "name": "ridibooks/cover",
   "description": "Ridibooks book cover image provider",
   "type": "library",
   "license": "Apache-2.0",
   "require": {
+    "php": "^7.0|^7.1",
     "symfony/http-foundation": "^2.8.0|^3.2"
   },
   "autoload": {

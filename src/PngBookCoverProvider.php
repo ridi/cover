@@ -1,24 +1,24 @@
 <?php
-namespace Ridibooks\Library\Cover;
+namespace Ridibooks\Cover;
 
 class PngBookCoverProvider extends BookCoverProvider
 {
-	protected function getMIMEType()
-	{
-		return 'image/png';
-	}
+    protected function getMIMEType()
+    {
+        return 'image/png';
+    }
 
-	protected function getCacheFilename()
-	{
-		$postfix = empty($this->subdirectory) ? '' : '_' . $this->subdirectory;
+    protected function getCacheFilename()
+    {
+        $postfix = empty($this->subdirectory) ? '' : '_' . $this->subdirectory;
 
-		return sprintf('cover_%d%s.png', $this->width, $postfix);
-	}
+        return sprintf('cover_%d%s.png', $this->width, $postfix);
+    }
 
-	protected function generate($output_file)
-	{
-		$generator = new ThumbnailGenerator($this->getSourcePath());
+    protected function generate($output_file)
+    {
+        $generator = new ThumbnailGenerator($this->getSourcePath());
 
-		return $generator->saveAsPng(ThumbnailGenerator::THUMB_TYPE_ASPECT_FIT, $this->width, $this->height, $output_file);
-	}
+        return $generator->saveAsPng(ThumbnailGenerator::THUMB_TYPE_ASPECT_FIT, $this->width, $this->height, $output_file);
+    }
 }
