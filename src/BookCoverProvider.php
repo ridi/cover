@@ -43,7 +43,7 @@ abstract class BookCoverProvider
 
     private function isValid($cached_cover_path)
     {
-        if ($_SERVER['HTTP_CACHE_CONTROL'] === 'no-cache') {
+        if (Request::createFromGlobals()->isNoCache()) {
             return false;
         }
 
