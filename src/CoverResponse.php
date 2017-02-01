@@ -58,11 +58,23 @@ class CoverResponse
         return $provider->getResponse();
     }
 
-    /**
-     * @return array
-     */
-    public static function getAvailableSizes()
+    public static function getAvailableSizes(): array
     {
         return array_keys(self::$OPTIONS['size']);
+    }
+
+    public static function getAvailableDpis(): array
+    {
+        return array_keys(self::$OPTIONS['dpi']);
+    }
+
+    public static function getAvailableFormats(): array
+    {
+        return array_keys(self::$OPTIONS['format']);
+    }
+
+    public static function getAvailableTypes(): array
+    {
+        return array_keys(self::$OPTIONS['type']);
     }
 }
