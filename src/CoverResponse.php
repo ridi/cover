@@ -24,10 +24,7 @@ class CoverResponse
 
         /** @var BookCoverProvider $provider */
         $provider = new $class($b_id, $width, $height, $sub_dir);
-        if ($colorspace === CoverOptions::COLORSPACE_GRAYSCALE) {
-            $provider->setColorspace($colorspace);
-            $provider->setDither(true);
-        }
+        $provider->setColorspace($colorspace);
 
         return $provider->getResponse();
     }

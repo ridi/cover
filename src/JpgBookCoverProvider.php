@@ -19,6 +19,7 @@ class JpgBookCoverProvider extends BookCoverProvider
     protected function getCacheFilename()
     {
         $postfix = empty($this->subdirectory) ? '' : '_' . $this->subdirectory;
+        $postfix .= ($this->colorspace === CoverOptions::COLORSPACE_GRAYSCALE) ? '_d' : '';
 
         return sprintf('cover_%d_q%d%s.jpg', $this->width, $this->quality_percent, $postfix);
     }
@@ -29,7 +30,7 @@ class JpgBookCoverProvider extends BookCoverProvider
 
         $output_path = $output_file . '.jpg';
 
-        $generator->save($this->width, $this->height, function ($new_image) use ($output_path) {
+        $generator->save($this->width, $this->height, $this->colorspace, function ($new_image) use ($output_path) {
             // 일단 리사이즈 후 quality 100으로 저장한 다음
             imagejpeg($new_image, $output_path, $this->quality_percent);
 

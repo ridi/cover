@@ -11,8 +11,6 @@ class ThumbnailGenerator
     const THUMB_TYPE_SQUARE = 4;
 
     private $src;
-    private $src_width;
-    private $src_height;
 
     private $thumb_type;
 
@@ -37,15 +35,33 @@ class ThumbnailGenerator
             throw CoverException::fromInvalidMimeType($metadata['mime']);
         }
 
-        $this->src_width = imagesx($this->src);
-        $this->src_height = imagesy($this->src);
-
         $this->thumb_type = self::THUMB_TYPE_ASPECT_FIT;
     }
 
-    public function save($width, $height, callable $post_processor)
+    private function getSrcWidth()
+    {
+        return imagesx($this->src);
+    }
+
+    private function getSrcHeight()
+    {
+        return imagesy($this->src);
+    }
+
+    public function setThumbType($type)
+    {
+        $this->thumb_type = $type;
+    }
+
+    public function save($width, $height, $colorspace, callable $post_processor)
     {
         $new_image = $this->generate($width, $height);
+
+        // 흑백으로 출력할 경우 디더링 적용
+        if ($colorspace === CoverOptions::COLORSPACE_GRAYSCALE) {
+            $this->ditherGray16($new_image);
+        }
+
         $post_processor($new_image);
 
         imagedestroy($new_image);
@@ -66,6 +82,31 @@ class ThumbnailGenerator
         return $new_image;
     }
 
+    /**
+     * EPD에 최적화된 디더링 적용
+     *
+     * @param resource $im
+     */
+    private function ditherGray16($im)
+    {
+        $levels = 16;
+
+        // 디테일이 없어짐
+        //imagefilter($im, IMG_FILTER_GRAYSCALE);
+        imagetruecolortopalette($im, true, 256);
+
+        $num_colors = imagecolorstotal($im);
+
+        for ($c = 0; $c < $num_colors; $c++) {
+            $col = imagecolorsforindex($im, $c);
+            $gray = round(0.299 * $col['red'] + 0.587 * $col['green'] + 0.114 * $col['blue']);
+
+            $l = intval($gray / $levels);
+            $g = $l * $levels + $l;
+            imagecolorset($im, $c, $g, $g, $g);
+        }
+    }
+
     private function generateScaled($width, $height)
     {
         list($dst_w, $dst_h) = $this->getTargetImageSize($width, $height);
@@ -73,14 +114,14 @@ class ThumbnailGenerator
         $image = imagecreatetruecolor($dst_w, $dst_h);
 
         // 1. 원본 얹히기
-        imagecopyresampled($image, $this->src, 0, 0, 0, 0, $dst_w, $dst_h, $this->src_width, $this->src_height);
+        imagecopyresampled($image, $this->src, 0, 0, 0, 0, $dst_w, $dst_h, $this->getSrcWidth(), $this->getSrcHeight());
 
         return $image;
     }
 
     private function generateAspectFit($width, $height)
     {
-        if ($this->src_width > $width || $this->src_height > $height) {
+        if ($this->getSrcWidth() > $width || $this->getSrcHeight() > $height) {
             return $this->generateScaled($width, $height);
         }
 
@@ -90,7 +131,7 @@ class ThumbnailGenerator
     private function getTargetImageSize($width, $height)
     {
         $scaled_width = $width;
-        $scaled_height = $this->src_height * ($width / $this->src_width);
+        $scaled_height = $this->getSrcHeight() * ($width / $this->getSrcWidth());
 
         if ($scaled_height > $height) {
             $resize_scale = $height / $scaled_height;
@@ -106,7 +147,7 @@ class ThumbnailGenerator
     {
         $image = imagecreatetruecolor($width, $width);
 
-        imagecopyresampled($image, $this->src, 0, 0, 0, 0, $width, $width, $this->src_width, $this->src_width);
+        imagecopyresampled($image, $this->src, 0, 0, 0, 0, $width, $width, $this->getSrcWidth(), $this->getSrcWidth());
 
         return $image;
     }

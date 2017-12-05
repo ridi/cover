@@ -15,7 +15,6 @@ abstract class BookCoverProvider
     protected $subdirectory;
 
     protected $colorspace;
-    protected $dither = false;
 
     public function __construct($b_id, $width, $height, $subdirectory)
     {
@@ -26,17 +25,11 @@ abstract class BookCoverProvider
         $this->subdirectory = $subdirectory;
 
         $this->colorspace = CoverOptions::COLORSPACE_TRUECOLOR;
-        $this->dither = false;
     }
 
     public function setColorspace($colorspace)
     {
         $this->colorspace = $colorspace;
-    }
-
-    public function setDither($enable)
-    {
-        $this->dither = $enable;
     }
 
     abstract protected function getMIMEType();
