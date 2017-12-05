@@ -1,12 +1,13 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Ridibooks\Test\Cover;
 
+use PHPUnit\Framework\TestCase;
 use Ridibooks\Cover\CoverResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class CoverResponseTest extends \PHPUnit_Framework_TestCase
+class CoverResponseTest extends TestCase
 {
     function arrayWalk(array $it_array): \Generator
     {
@@ -49,6 +50,7 @@ class CoverResponseTest extends \PHPUnit_Framework_TestCase
         $b_id = '100000001';
 
         $response = CoverResponse::create($b_id, $size, $dpi, $format, $type);
-        self::assertInstanceOf(Response::class, $response);
+
+        $this->assertInstanceOf(Response::class, $response);
     }
 }

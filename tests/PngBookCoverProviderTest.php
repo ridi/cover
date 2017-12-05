@@ -1,10 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace Ridibooks\Tests\Cover;
 
+use PHPUnit\Framework\TestCase;
 use Ridibooks\Cover\PngBookCoverProvider;
 
-class BookCoverProviderTest extends \PHPUnit_Framework_TestCase
+class BookCoverProviderTest extends TestCase
 {
     public function serviceTypes(): array
     {
@@ -23,7 +25,7 @@ class BookCoverProviderTest extends \PHPUnit_Framework_TestCase
         $provider = new PngBookCoverProvider($b_id, $width, $height, $subdirectory);
         $cover_path = $provider->provide();
 
-        self::assertFileExists($cover_path);
+        $this->assertFileExists($cover_path);
     }
 
     /**
@@ -38,6 +40,6 @@ class BookCoverProviderTest extends \PHPUnit_Framework_TestCase
         $provider = new PngBookCoverProvider($b_id, $width, $height, $subdirectory);
         $cover_path = $provider->provide();
 
-        self::assertNull($cover_path);
+        $this->assertNull($cover_path);
     }
 }
