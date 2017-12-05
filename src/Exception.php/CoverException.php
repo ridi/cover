@@ -10,9 +10,9 @@ class CoverException extends \RuntimeException
         return new self('Cannot open source image: ' . $src);
     }
 
-    public static function fromInvalidSourceMetadata(array $metadata): self
+    public static function fromInvalidMimeType($mime): self
     {
-        return new self('Unsupported source image type: ' . $metadata['mime']);
+        return new self('Unsupported source image type: ' . $mime);
     }
 
     public static function fromInvalidThumbnailType($thumb_type): self

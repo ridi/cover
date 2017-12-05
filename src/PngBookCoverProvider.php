@@ -19,6 +19,14 @@ class PngBookCoverProvider extends BookCoverProvider
     {
         $generator = new ThumbnailGenerator($this->getSourcePath());
 
-        return $generator->saveAsPng(ThumbnailGenerator::THUMB_TYPE_ASPECT_FIT, $this->width, $this->height, $output_file);
+        $output_path = $output_file . '.png';
+
+        $generator->save($this->width, $this->height, function ($new_image) use ($output_path) {
+            imagepng($new_image, $output_path);
+
+            // optipng는 시간이 너우 오래걸려 하지 않는다
+        });
+
+        return $output_path;
     }
 }

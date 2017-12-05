@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Ridibooks\Test\Cover;
 
 use PHPUnit\Framework\TestCase;
+use Ridibooks\Cover\CoverOptions;
 use Ridibooks\Cover\CoverResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,10 +32,11 @@ class CoverResponseTest extends TestCase
     public function validArguments()
     {
         return $this->arrayWalk([
-            CoverResponse::getAvailableSizes(),
-            CoverResponse::getAvailableDpis(),
-            CoverResponse::getAvailableFormats(),
-            CoverResponse::getAvailableTypes(),
+            CoverOptions::getAvailableSizes(),
+            CoverOptions::getAvailableDpis(),
+            CoverOptions::getAvailableFormats(),
+            CoverOptions::getAvailableTypes(),
+            CoverOptions::getAvailableDisplays(),
         ]);
     }
 
@@ -45,11 +47,11 @@ class CoverResponseTest extends TestCase
      * @param $type
      * @dataProvider validArguments
      */
-    public function testCreate($size, $dpi, $format, $type)
+    public function testCreate($size, $dpi, $format, $type, $display)
     {
         $b_id = '100000001';
 
-        $response = CoverResponse::create($b_id, $size, $dpi, $format, $type);
+        $response = CoverResponse::create($b_id, $size, $dpi, $format, $type, $display);
 
         $this->assertInstanceOf(Response::class, $response);
     }

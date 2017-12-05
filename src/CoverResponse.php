@@ -3,37 +3,6 @@ namespace Ridibooks\Cover;
 
 class CoverResponse
 {
-    private static $OPTIONS = [
-        'size' => [
-            'small' => 60,
-            'medium' => 80,
-            'large' => 110,
-            'xlarge' => 150,
-            'xxlarge' => 320
-        ],
-        'dpi' => [
-            'mdpi' => 1.0,
-            'hdpi' => 1.5,
-            'xhdpi' => 2.0,
-            'xxhdpi' => 3.0
-        ],
-        'format' => [
-            'jpg' => JpgBookCoverProvider::class,
-            'png' => PngBookCoverProvider::class
-        ],
-        'type' => [
-            'service' => '',
-            'test' => 'test'
-        ]
-    ];
-
-    private static function getOption($option, $key, $default_key)
-    {
-        $key = array_key_exists($key, self::$OPTIONS[$option]) ? $key : $default_key;
-
-        return self::$OPTIONS[$option][$key];
-    }
-
     /**
      * @param $b_id
      * @param $size
@@ -42,39 +11,24 @@ class CoverResponse
      * @param $type
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public static function create($b_id, $size, $dpi, $format, $type)
+    public static function create($b_id, $size, $dpi, $format, $type, $display)
     {
-        $width = self::getOption('size', $size, 'medium');
-        $scale = self::getOption('dpi', $dpi, 'hdpi');
-        $class = self::getOption('format', $format, 'jpg');
-        $sub_dir = self::getOption('type', $type, 'service');
+        $width = CoverOptions::getWidth($size);
+        $scale = CoverOptions::getScale($dpi);
+        $class = CoverOptions::getProviderClass($format);
+        $sub_dir = CoverOptions::getSubdirectory($type);
+        $colorspace = CoverOptions::getColorspace($display);
 
         $width = intval($width * $scale);
         $height = 10000;
 
         /** @var BookCoverProvider $provider */
         $provider = new $class($b_id, $width, $height, $sub_dir);
+        if ($colorspace === CoverOptions::COLORSPACE_GRAYSCALE) {
+            $provider->setColorspace($colorspace);
+            $provider->setDither(true);
+        }
 
         return $provider->getResponse();
-    }
-
-    public static function getAvailableSizes(): array
-    {
-        return array_keys(self::$OPTIONS['size']);
-    }
-
-    public static function getAvailableDpis(): array
-    {
-        return array_keys(self::$OPTIONS['dpi']);
-    }
-
-    public static function getAvailableFormats(): array
-    {
-        return array_keys(self::$OPTIONS['format']);
-    }
-
-    public static function getAvailableTypes(): array
-    {
-        return array_keys(self::$OPTIONS['type']);
     }
 }

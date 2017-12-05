@@ -14,6 +14,8 @@ class ThumbnailGenerator
     private $src_width;
     private $src_height;
 
+    private $thumb_type;
+
     public function __construct($src)
     {
         if (!is_readable($src)) {
@@ -32,50 +34,33 @@ class ThumbnailGenerator
         } elseif ($metadata['mime'] == 'image/gif') {
             $this->src = imagecreatefromgif($src);
         } else {
-            throw CoverException::fromInvalidSourceMetadata($metadata);
+            throw CoverException::fromInvalidMimeType($metadata['mime']);
         }
 
         $this->src_width = imagesx($this->src);
         $this->src_height = imagesy($this->src);
+
+        $this->thumb_type = self::THUMB_TYPE_ASPECT_FIT;
     }
 
-    public function saveAsJpg($thumb_type, $width, $height, $path, $quality = 90)
+    public function save($width, $height, callable $post_processor)
     {
-        $new_image = $this->generate($thumb_type, $width, $height);
-        $output_path = $path . '.jpg';
+        $new_image = $this->generate($width, $height);
+        $post_processor($new_image);
 
-        // 일단 리사이즈 후 quality 100으로 저장한 다음
-        imagejpeg($new_image, $output_path, $quality);
         imagedestroy($new_image);
-
-        // jpegoptim을 적용한다.
-        exec('jpegoptim -p -q --strip-all ' . escapeshellarg(realpath($output_path)));
-
-        return $output_path;
     }
 
-    public function saveAsPng($thumb_type, $width, $height, $path)
+    private function generate($width, $height)
     {
-        $new_image = $this->generate($thumb_type, $width, $height);
-        $output_path = $path . '.png';
-        imagepng($new_image, $output_path);
-        imagedestroy($new_image);
-
-        // optipng는 시간이 너우 오래걸려 하지 않는다
-
-        return $output_path;
-    }
-
-    private function generate($thumb_type, $width, $height)
-    {
-        if ($thumb_type == self::THUMB_TYPE_SCALED) {
+        if ($this->thumb_type === self::THUMB_TYPE_SCALED) {
             $new_image = $this->generateScaled($width, $height);
-        } elseif ($thumb_type == self::THUMB_TYPE_ASPECT_FIT) {
+        } elseif ($this->thumb_type === self::THUMB_TYPE_ASPECT_FIT) {
             $new_image = $this->generateAspectFit($width, $height);
-        } elseif ($thumb_type == self::THUMB_TYPE_SQUARE) {
+        } elseif ($this->thumb_type === self::THUMB_TYPE_SQUARE) {
             $new_image = $this->generateSquare($width);
         } else {
-            throw CoverException::fromInvalidThumbnailType($thumb_type);
+            throw CoverException::fromInvalidThumbnailType($this->thumb_type);
         }
 
         return $new_image;

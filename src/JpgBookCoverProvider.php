@@ -27,6 +27,16 @@ class JpgBookCoverProvider extends BookCoverProvider
     {
         $generator = new ThumbnailGenerator($this->getSourcePath());
 
-        return $generator->saveAsJpg(ThumbnailGenerator::THUMB_TYPE_ASPECT_FIT, $this->width, $this->height, $output_file, $this->quality_percent);
+        $output_path = $output_file . '.jpg';
+
+        $generator->save($this->width, $this->height, function ($new_image) use ($output_path) {
+            // 일단 리사이즈 후 quality 100으로 저장한 다음
+            imagejpeg($new_image, $output_path, $this->quality_percent);
+
+            // jpegoptim을 적용한다.
+            exec('jpegoptim -p -q --strip-all ' . escapeshellarg(realpath($output_path)));
+        });
+
+        return $output_path;
     }
 }
