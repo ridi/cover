@@ -1,7 +1,7 @@
 <?php
 namespace Ridibooks\Cover;
 
-use Ridibooks\Exception\RidiErrorException;
+use Ridibooks\Cover\Exception\CoverException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -69,7 +69,7 @@ abstract class BookCoverProvider
             if (rename($new_cover_path, $output_file_path)) {
                 return $output_file_path;
             } else {
-                throw new RidiErrorException('Failed to rename generated cover: ' . $new_cover_path . ' => ' . $output_file_path);
+                throw CoverException::fromNonCacheableOutput($new_cover_path, $output_file_path);
             }
         } catch (\Exception $e) {
             trigger_error('[COVER] Failed to create: ' . $e->getMessage());

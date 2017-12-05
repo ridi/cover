@@ -1,7 +1,7 @@
 <?php
 namespace Ridibooks\Cover;
 
-use Ridibooks\Exception\RidiErrorException;
+use Ridibooks\Cover\Exception\CoverException;
 
 class ThumbnailGenerator
 {
@@ -17,12 +17,12 @@ class ThumbnailGenerator
     public function __construct($src)
     {
         if (!is_readable($src)) {
-            throw new RidiErrorException('Cannot open source image: ' . $src);
+            throw CoverException::fromInvalidSourceFile($src);
         }
 
         $metadata = getimagesize($src);
         if ($metadata === false) {
-            throw new RidiErrorException('Cannot read metadata: ' . $src);
+            throw CoverException::fromInvalidSourceFile($src);
         }
 
         if ($metadata['mime'] == 'image/jpeg') {
@@ -32,7 +32,7 @@ class ThumbnailGenerator
         } elseif ($metadata['mime'] == 'image/gif') {
             $this->src = imagecreatefromgif($src);
         } else {
-            throw new RidiErrorException('Unsupported source image type: ' . $metadata['mime']);
+            throw CoverException::fromInvalidSourceMetadata($metadata);
         }
 
         $this->src_width = imagesx($this->src);
@@ -75,7 +75,7 @@ class ThumbnailGenerator
         } elseif ($thumb_type == self::THUMB_TYPE_SQUARE) {
             $new_image = $this->generateSquare($width);
         } else {
-            throw new RidiErrorException('Illegal thumbnail type: ' . $thumb_type);
+            throw CoverException::fromInvalidThumbnailType($thumb_type);
         }
 
         return $new_image;
