@@ -19,5 +19,8 @@
     "psr-4": {
       "Ridibooks\\Tests\\Cover\\": "tests/"
     }
+  },
+  "scripts": {
+    "test": "phpunit"
   }
 }

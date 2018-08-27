@@ -36,6 +36,7 @@ class CoverResponseTest extends TestCase
             CoverOptions::getAvailableDpis(),
             CoverOptions::getAvailableFormats(),
             CoverOptions::getAvailableTypes(),
+            CoverOptions::getAvailableDisplays(),
         ]);
     }
 
@@ -46,10 +47,9 @@ class CoverResponseTest extends TestCase
      * @param $type
      * @dataProvider validArguments
      */
-    public function testCreate($size, $dpi, $format, $type)
+    public function testCreate($size, $dpi, $format, $type, $display)
     {
         $b_id = '100000001';
-        $display = 'lcd';
 
         $response = CoverResponse::create($b_id, $size, $dpi, $format, $type, $display);
 
