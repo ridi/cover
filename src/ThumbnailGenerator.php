@@ -2,6 +2,7 @@
 namespace Ridibooks\Cover;
 
 use Ridibooks\Cover\Exception\CoverException;
+use Ridibooks\Cover\Options\CoverOptions;
 
 class ThumbnailGenerator
 {

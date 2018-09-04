@@ -1,30 +1,24 @@
 <?php
 namespace Ridibooks\Cover;
 
+use Ridibooks\Cover\BookCoverProvider\AbstractBookCoverProvider;
+use Ridibooks\Cover\FileProvider\AbstractFileProvider;
+use Ridibooks\Cover\Options\CoverOptionDto;
+use Ridibooks\Cover\Options\CoverOptions;
+
 class CoverResponse
 {
     /**
-     * @param $b_id
-     * @param $size
-     * @param $dpi
      * @param $format
-     * @param $type
+     * @param CoverOptionDto $cover_option_dto
+     * @param AbstractFileProvider $file_provider
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public static function create($b_id, $size, $dpi, $format, $type, $display)
+    public static function create($format, $cover_option_dto, $file_provider)
     {
-        $width = CoverOptions::getWidth($size);
-        $scale = CoverOptions::getScale($dpi);
         $class = CoverOptions::getProviderClass($format);
-        $sub_dir = CoverOptions::getSubdirectory($type);
-        $colorspace = CoverOptions::getColorspace($display);
-
-        $width = intval($width * $scale);
-        $height = 10000;
-
-        /** @var BookCoverProvider $provider */
-        $provider = new $class($b_id, $width, $height, $sub_dir);
-        $provider->setColorspace($colorspace);
+        /** @var AbstractBookCoverProvider $provider */
+        $provider = new $class($cover_option_dto, $file_provider);
 
         return $provider->getResponse();
     }
