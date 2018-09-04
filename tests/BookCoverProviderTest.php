@@ -25,7 +25,7 @@ class BookCoverProviderTest extends TestCase
         $dpi = 'xxhdpi';
         $display = 'lcd';
         $cover_option_dto = CoverOptionDto::import($b_id, $size, $dpi, $service_type, $display);
-        $file_provider = new TestFileProvider($cover_option_dto);
+        $file_provider = new TestFileProvider();
 
         $provider = new PngBookCoverProvider($cover_option_dto, $file_provider);
         $cover_path = $provider->provide();
@@ -43,7 +43,7 @@ class BookCoverProviderTest extends TestCase
         $dpi = 'xxhdpi';
         $display = 'lcd';
         $cover_option_dto = CoverOptionDto::import($b_id, $size, $dpi, $service_type, $display);
-        $file_provider = new TestFileProvider($cover_option_dto);
+        $file_provider = new TestFileProvider();
 
         $provider = new PngBookCoverProvider($cover_option_dto, $file_provider);
         $cover_path = $provider->provide();
@@ -59,7 +59,7 @@ class BookCoverProviderTest extends TestCase
         $service_type = '';
         $display = 'epd';
         $cover_option_dto = CoverOptionDto::import($b_id, $size, $dpi, $service_type, $display);
-        $file_provider = new TestFileProvider($cover_option_dto);
+        $file_provider = new TestFileProvider();
 
         $provider = new JpgBookCoverProvider($cover_option_dto, $file_provider);
 

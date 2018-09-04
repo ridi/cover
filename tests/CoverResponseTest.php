@@ -53,7 +53,7 @@ class CoverResponseTest extends TestCase
     {
         $b_id = '100000001';
         $cover_option_dto = CoverOptionDto::import($b_id, $size, $dpi, $type, $display);
-        $file_provider = new TestFileProvider($cover_option_dto);
+        $file_provider = new TestFileProvider();
 
         $response = CoverResponse::create($format, $cover_option_dto, $file_provider);
 

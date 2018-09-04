@@ -52,11 +52,22 @@ abstract class AbstractBookCoverProvider
     /* public for test */
     public function provide()
     {
-        if ($this->file_provider->getSourcePath() === null) {
+        $source_path = $this->file_provider->getSourcePath(
+            $this->cover_option_dto->cp_id,
+            $this->cover_option_dto->b_id,
+            $this->cover_option_dto->sub_dir
+        );
+
+        if ($source_path === null) {
             return null;
         }
 
-        $cached_cover = $this->file_provider->getCachedPath($this->getCacheFilename());
+        $cached_cover = $this->file_provider->getCachedPath(
+            $this->cover_option_dto->cp_id,
+            $this->cover_option_dto->b_id,
+            $this->getCacheFilename()
+        );
+
         if ($this->isValid($cached_cover)) {
             return $cached_cover;
         }
@@ -74,7 +85,11 @@ abstract class AbstractBookCoverProvider
 
         if (file_exists($cached_cover_path)) {
             // 원본이 더 최신이면 Invalidate Cache
-            $source_path = $this->file_provider->getSourcePath();
+            $source_path = $this->file_provider->getSourcePath(
+                $this->cover_option_dto->cp_id,
+                $this->cover_option_dto->b_id,
+                $this->cover_option_dto->sub_dir
+            );
             if (filemtime($source_path) - filemtime($cached_cover_path) > 0) {
                 @unlink($cached_cover_path);
             } else {
@@ -108,7 +123,12 @@ abstract class AbstractBookCoverProvider
 
     private function generate($output_file)
     {
-        $generator = new ThumbnailGenerator($this->file_provider->getSourcePath());
+        $source_path = $this->file_provider->getSourcePath(
+            $this->cover_option_dto->cp_id,
+            $this->cover_option_dto->b_id,
+            $this->cover_option_dto->sub_dir
+        );
+        $generator = new ThumbnailGenerator($source_path);
 
         $output_path = $output_file . '.' . $this->getExt();
 

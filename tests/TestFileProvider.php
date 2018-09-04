@@ -7,7 +7,8 @@ use Ridibooks\Cover\FileProvider\AbstractFileProvider;
 
 class TestFileProvider extends AbstractFileProvider
 {
-    protected function getCacheFilePath()
+    /* public for test */
+    public function getCacheFilePath()
     {
         return __DIR__ . '/tmp';
     }

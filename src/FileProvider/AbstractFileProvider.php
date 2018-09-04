@@ -1,21 +1,11 @@
 <?php
-declare(strict_types=1);
 
 namespace Ridibooks\Cover\FileProvider;
 
-use Ridibooks\Cover\Options\CoverOptionDto;
-
 abstract class AbstractFileProvider
 {
-    /** @var CoverOptionDto */
-    protected $cover_option_dto;
-
-    public function __construct($cover_option_dto)
-    {
-        $this->cover_option_dto = $cover_option_dto;
-    }
-
-    abstract protected function getCacheFilePath();
+    /* public for test */
+    abstract public function getCacheFilePath();
 
     abstract protected function getBookDataPath();
 
@@ -24,15 +14,14 @@ abstract class AbstractFileProvider
         return tempnam($this->getCacheFilePath(), 'cover_' . time());
     }
 
-    public function getSourcePath()
+    public function getSourcePath($cp_id, $b_id, $sub_dir)
     {
-        $cover_option_dto = $this->cover_option_dto;
-        $dir = $this->getBookDataPath() . "/{$cover_option_dto->cp_id}/{$cover_option_dto->b_id}";
-        if ($cover_option_dto->sub_dir !== '') {
-            $dir .= '/' . $cover_option_dto->sub_dir;
+        $dir = $this->getBookDataPath() . "/{$cp_id}/{$b_id}";
+        if ($sub_dir !== '') {
+            $dir .= '/' . $sub_dir;
         }
 
-        $file = $dir . '/' . $cover_option_dto->b_id . '_org.jpg';
+        $file = $dir . '/' . $b_id . '_org.jpg';
         if (is_readable($file)) {
             return $file;
         }
@@ -40,10 +29,8 @@ abstract class AbstractFileProvider
         return null;
     }
 
-    public function getCachedPath($cache_filename)
+    public function getCachedPath($cp_id, $b_id, $cache_filename)
     {
-        $cover_option_dto = $this->cover_option_dto;
-
-        return $this->getCacheFilePath() . "/{$cover_option_dto->cp_id}/{$cover_option_dto->b_id}/{$cache_filename}";
+        return $this->getCacheFilePath() . "/{$cp_id}/{$b_id}/{$cache_filename}";
     }
 }
