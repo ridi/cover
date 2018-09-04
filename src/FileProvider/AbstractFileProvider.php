@@ -21,12 +21,7 @@ abstract class AbstractFileProvider
             $dir .= '/' . $sub_dir;
         }
 
-        $file = $dir . '/' . $b_id . '_org.jpg';
-        if (is_readable($file)) {
-            return $file;
-        }
-
-        return null;
+        return $dir . '/' . $b_id . '_org.jpg';
     }
 
     public function getCachedPath($cp_id, $b_id, $cache_filename)

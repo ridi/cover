@@ -52,27 +52,34 @@ abstract class AbstractBookCoverProvider
     /* public for test */
     public function provide()
     {
-        $source_path = $this->file_provider->getSourcePath(
-            $this->cover_option_dto->cp_id,
-            $this->cover_option_dto->b_id,
-            $this->cover_option_dto->sub_dir
-        );
+        $source_path = $this->getSourcePath();
 
         if ($source_path === null) {
             return null;
         }
 
-        $cached_cover = $this->file_provider->getCachedPath(
-            $this->cover_option_dto->cp_id,
-            $this->cover_option_dto->b_id,
-            $this->getCacheFilename()
-        );
+        $cached_cover = $this->getSourcePath();
 
         if ($this->isValid($cached_cover)) {
             return $cached_cover;
         }
 
         return $this->makeCache($cached_cover);
+    }
+
+    private function getSourcePath()
+    {
+        $source_path = $this->file_provider->getSourcePath(
+            $this->cover_option_dto->cp_id,
+            $this->cover_option_dto->b_id,
+            $this->cover_option_dto->sub_dir
+        );
+
+        if (is_readable($source_path)) {
+            return $source_path;
+        }
+
+        return null;
     }
 
     abstract protected function getCacheFilename();
@@ -85,11 +92,7 @@ abstract class AbstractBookCoverProvider
 
         if (file_exists($cached_cover_path)) {
             // 원본이 더 최신이면 Invalidate Cache
-            $source_path = $this->file_provider->getSourcePath(
-                $this->cover_option_dto->cp_id,
-                $this->cover_option_dto->b_id,
-                $this->cover_option_dto->sub_dir
-            );
+            $source_path = $this->getSourcePath();
             if (filemtime($source_path) - filemtime($cached_cover_path) > 0) {
                 @unlink($cached_cover_path);
             } else {
@@ -123,11 +126,7 @@ abstract class AbstractBookCoverProvider
 
     private function generate($output_file)
     {
-        $source_path = $this->file_provider->getSourcePath(
-            $this->cover_option_dto->cp_id,
-            $this->cover_option_dto->b_id,
-            $this->cover_option_dto->sub_dir
-        );
+        $source_path = $this->getSourcePath();
         $generator = new ThumbnailGenerator($source_path);
 
         $output_path = $output_file . '.' . $this->getExt();
