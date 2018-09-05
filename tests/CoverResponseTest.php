@@ -4,8 +4,10 @@ declare(strict_types=1);
 namespace Ridibooks\Test\Cover;
 
 use PHPUnit\Framework\TestCase;
-use Ridibooks\Cover\CoverOptions;
+use Ridibooks\Cover\Options\CoverOptionDto;
+use Ridibooks\Cover\Options\CoverOptions;
 use Ridibooks\Cover\CoverResponse;
+use Ridibooks\Tests\Cover\TestFileProvider;
 use Symfony\Component\HttpFoundation\Response;
 
 class CoverResponseTest extends TestCase
@@ -50,8 +52,10 @@ class CoverResponseTest extends TestCase
     public function testCreate($size, $dpi, $format, $type, $display)
     {
         $b_id = '100000001';
+        $cover_option_dto = CoverOptionDto::import($b_id, $size, $dpi, $type, $display);
+        $file_provider = new TestFileProvider();
 
-        $response = CoverResponse::create($b_id, $size, $dpi, $format, $type, $display);
+        $response = CoverResponse::create($format, $cover_option_dto, $file_provider);
 
         $this->assertInstanceOf(Response::class, $response);
     }

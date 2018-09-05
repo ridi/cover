@@ -1,31 +1,47 @@
 <?php
 namespace Ridibooks\Cover;
 
+use Ridibooks\Cover\BookCoverProvider\AbstractBookCoverProvider;
+use Ridibooks\Cover\FileProvider\AbstractFileProvider;
+use Ridibooks\Cover\Options\CoverOptionDto;
+use Ridibooks\Cover\Options\CoverOptions;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
 class CoverResponse
 {
     /**
-     * @param $b_id
-     * @param $size
-     * @param $dpi
      * @param $format
-     * @param $type
+     * @param CoverOptionDto $cover_option_dto
+     * @param AbstractFileProvider $file_provider
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public static function create($b_id, $size, $dpi, $format, $type, $display)
+    public static function create($format, $cover_option_dto, $file_provider)
     {
-        $width = CoverOptions::getWidth($size);
-        $scale = CoverOptions::getScale($dpi);
         $class = CoverOptions::getProviderClass($format);
-        $sub_dir = CoverOptions::getSubdirectory($type);
-        $colorspace = CoverOptions::getColorspace($display);
+        /** @var AbstractBookCoverProvider $provider */
+        $provider = new $class($cover_option_dto, $file_provider);
 
-        $width = intval($width * $scale);
-        $height = 10000;
+        $use_cache = true;
+        if (Request::createFromGlobals()->isNoCache()) {
+            $use_cache = false;
+        }
 
-        /** @var BookCoverProvider $provider */
-        $provider = new $class($b_id, $width, $height, $sub_dir);
-        $provider->setColorspace($colorspace);
+        $thumb_path = $provider->provide($use_cache);
+        if (!is_readable($thumb_path)) {
+            return new Response('Cover not found.', Response::HTTP_NOT_FOUND);
+        }
 
-        return $provider->getResponse();
+        BinaryFileResponse::trustXSendfileTypeHeader();
+        $res = new BinaryFileResponse($thumb_path);
+        $res->headers->set('Content-type', $provider->getMIMEType());
+        if ($use_cache) {
+            $res->setExpires(new \DateTime('+3 months'));
+        }
+
+        $res->prepare(Request::createFromGlobals());
+
+        return $res;
     }
 }

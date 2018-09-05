@@ -5,6 +5,7 @@
   "license": "MIT",
   "require": {
     "php": "^7.0|^7.1",
+    "ext-gd": "*",
     "symfony/http-foundation": "^2.8.0|^3.4"
   },
   "require-dev": {

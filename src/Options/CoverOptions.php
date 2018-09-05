@@ -1,7 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Ridibooks\Cover;
+namespace Ridibooks\Cover\Options;
+
+use Ridibooks\Cover\BookCoverProvider\JpgBookCoverProvider;
+use Ridibooks\Cover\BookCoverProvider\PngBookCoverProvider;
 
 class CoverOptions
 {
