@@ -4,7 +4,7 @@ namespace Ridibooks\Cover\BookCoverProvider;
 
 class PngBookCoverProvider extends AbstractBookCoverProvider
 {
-    protected function getMIMEType()
+    public function getMIMEType()
     {
         return 'image/png';
     }
@@ -14,11 +14,6 @@ class PngBookCoverProvider extends AbstractBookCoverProvider
         $postfix = $this->getCacheFilenamePostfix();
 
         return sprintf('cover_%d%s.png', $this->cover_option_dto->width, $postfix);
-    }
-
-    protected function getExt()
-    {
-        return 'png';
     }
 
     protected function afterGenerate($new_image, $output_path)

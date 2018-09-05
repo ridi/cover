@@ -12,7 +12,7 @@ class JpgBookCoverProvider extends AbstractBookCoverProvider
         $this->quality_percent = (int)$quality_percent;
     }
 
-    protected function getMIMEType()
+    public function getMIMEType()
     {
         return 'image/jpeg';
     }
@@ -22,11 +22,6 @@ class JpgBookCoverProvider extends AbstractBookCoverProvider
         $postfix = $this->getCacheFilenamePostfix();
 
         return sprintf('cover_%d_q%d%s.jpg', $this->cover_option_dto->width, $this->quality_percent, $postfix);
-    }
-
-    protected function getExt()
-    {
-        return 'jpg';
     }
 
     protected function afterGenerate($new_image, $output_path)
