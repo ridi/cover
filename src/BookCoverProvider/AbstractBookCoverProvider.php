@@ -58,7 +58,11 @@ abstract class AbstractBookCoverProvider
             return null;
         }
 
-        $cached_cover = $this->getSourcePath();
+        $cached_cover = $this->file_provider->getCachedPath(
+            $this->cover_option_dto->cp_id,
+            $this->cover_option_dto->b_id,
+            $this->getCacheFilename()
+        );
 
         if ($this->isValid($cached_cover)) {
             return $cached_cover;
