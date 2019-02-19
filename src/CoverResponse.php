@@ -37,7 +37,7 @@ class CoverResponse
         $res = new BinaryFileResponse($thumb_path);
         $res->headers->set('Content-type', $provider->getMIMEType());
         if ($use_cache) {
-            $res->setExpires(new \DateTime('+3 months'));
+            $res->setExpires(new \DateTime('+1 year'));
         }
 
         $res->prepare(Request::createFromGlobals());
