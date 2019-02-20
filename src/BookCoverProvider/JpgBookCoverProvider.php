@@ -26,10 +26,9 @@ class JpgBookCoverProvider extends AbstractBookCoverProvider
 
     protected function afterGenerate($new_image, $output_path)
     {
-        // 일단 리사이즈 후 quality 100으로 저장한 다음
         imagejpeg($new_image, $output_path, $this->quality_percent);
 
-        // jpegoptim을 적용한다.
+        // optimize!
         exec('jpegoptim -p -q --strip-all ' . escapeshellarg(realpath($output_path)));
     }
 }

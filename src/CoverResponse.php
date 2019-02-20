@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Ridibooks\Cover;
 
 use Ridibooks\Cover\BookCoverProvider\AbstractBookCoverProvider;
@@ -12,10 +14,11 @@ use Symfony\Component\HttpFoundation\Response;
 class CoverResponse
 {
     /**
-     * @param $format
+     * @param string $format
      * @param CoverOptionDto $cover_option_dto
      * @param AbstractFileProvider $file_provider
      * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
      */
     public static function create($format, $cover_option_dto, $file_provider)
     {

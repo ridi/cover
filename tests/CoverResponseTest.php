@@ -47,6 +47,7 @@ class CoverResponseTest extends TestCase
      * @param $dpi
      * @param $format
      * @param $type
+     * @param $display
      * @dataProvider validArguments
      */
     public function testCreate($size, $dpi, $format, $type, $display)

@@ -16,6 +16,7 @@ class BookCoverProviderTest extends TestCase
     }
 
     /**
+     * @param $service_type
      * @dataProvider serviceTypes
      */
     public function testPngProvider($service_type)
@@ -34,6 +35,7 @@ class BookCoverProviderTest extends TestCase
     }
 
     /**
+     * @param $service_type
      * @dataProvider serviceTypes
      */
     public function testPngProviderWithInvalidCover($service_type)
