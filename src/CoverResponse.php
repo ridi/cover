@@ -31,7 +31,7 @@ class CoverResponse
             $use_cache = false;
         }
 
-        $thumb_path = $provider->provide($use_cache);
+        $thumb_path = (string)$provider->provide($use_cache);
         if (!is_readable($thumb_path)) {
             return new Response('Cover not found.', Response::HTTP_NOT_FOUND);
         }
