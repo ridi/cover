@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Ridibooks\Cover\BookCoverProvider;
 
 use Ridibooks\Cover\Exception\CoverException;
@@ -23,7 +25,7 @@ abstract class AbstractBookCoverProvider
     abstract public function getMIMEType();
 
     /* public for test */
-    public function provide($use_cache = true)
+    public function provide($use_cache = true): ?string
     {
         $source_path = $this->getSourcePath();
 
@@ -44,7 +46,7 @@ abstract class AbstractBookCoverProvider
         return $this->makeCache($cached_cover_path);
     }
 
-    private function getSourcePath()
+    private function getSourcePath(): ?string
     {
         $source_path = $this->file_provider->getSourcePath(
             $this->cover_option_dto->cp_id,
@@ -61,7 +63,7 @@ abstract class AbstractBookCoverProvider
 
     abstract protected function getCacheFilename();
 
-    private function isValid($cached_cover_path)
+    private function isValid($cached_cover_path): bool
     {
         if (!file_exists($cached_cover_path)) {
             return false;
@@ -71,13 +73,14 @@ abstract class AbstractBookCoverProvider
         $source_path = $this->getSourcePath();
         if (filemtime($source_path) - filemtime($cached_cover_path) > 0) {
             @unlink($cached_cover_path);
+
             return false;
         }
 
         return true;
     }
 
-    private function makeCache($output_file_path)
+    private function makeCache($output_file_path): ?string
     {
         $tmp_filename = $this->file_provider->getTempFilePath();
         try {
@@ -114,7 +117,7 @@ abstract class AbstractBookCoverProvider
 
     abstract protected function afterGenerate($new_image, $output_path);
 
-    protected function getCacheFilenamePostfix()
+    protected function getCacheFilenamePostfix(): string
     {
         $postfix = empty($this->cover_option_dto->sub_dir) ? '' : '_' . $this->cover_option_dto->sub_dir;
         $postfix .= ($this->cover_option_dto->color_space === CoverOptions::COLORSPACE_GRAYSCALE) ? '_d' : '';
