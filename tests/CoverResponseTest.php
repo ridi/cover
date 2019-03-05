@@ -60,4 +60,15 @@ class CoverResponseTest extends TestCase
 
         $this->assertInstanceOf(Response::class, $response);
     }
+
+    public function testCreateFail()
+    {
+        $b_id = '100000002';
+        $cover_option_dto = CoverOptionDto::import($b_id, null, null, null, null);
+        $file_provider = new TestFileProvider();
+
+        $response = CoverResponse::create('test', $cover_option_dto, $file_provider);
+
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+    }
 }
