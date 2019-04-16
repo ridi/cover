@@ -8,11 +8,17 @@ use Ridibooks\Cover\BookCoverProvider\PngBookCoverProvider;
 
 class CoverOptions
 {
-    const SUBDIRECTORY_NORMAL = '';
-    const SUBDIRECTORY_TEST = 'test';
+    public const DEFAULT_KEY_SIZE = 'medium';
+    public const DEFAULT_KEY_DPI = 'hdpi';
+    public const DEFAULT_KEY_FORMAT = 'jpg';
+    public const DEFAULT_KEY_TYPE = 'service';
+    public const DEFAULT_KEY_DISPLAY = 'lcd';
 
-    const COLORSPACE_GRAYSCALE = 'grayscale';
-    const COLORSPACE_TRUECOLOR = 'truecolor';
+    private const SUBDIRECTORY_NORMAL = '';
+    private const SUBDIRECTORY_TEST = 'test';
+
+    private const COLORSPACE_GRAYSCALE = 'grayscale';
+    private const COLORSPACE_TRUECOLOR = 'truecolor';
 
     private static $OPTIONS = [
         'size' => [ // size => width
@@ -51,27 +57,27 @@ class CoverOptions
 
     public static function getWidth($size)
     {
-        return self::get('size', $size, 'medium');
+        return self::get('size', $size, self::DEFAULT_KEY_SIZE);
     }
 
     public static function getScale($dpi): float
     {
-        return self::get('dpi', $dpi, 'hdpi');
+        return self::get('dpi', $dpi, self::DEFAULT_KEY_DPI);
     }
 
     public static function getProviderClass($format): string
     {
-        return self::get('format', $format, 'jpg');
+        return self::get('format', $format, self::DEFAULT_KEY_FORMAT);
     }
 
     public static function getSubdirectory($service_type): string
     {
-        return self::get('type', $service_type, 'service');
+        return self::get('type', $service_type, self::DEFAULT_KEY_TYPE);
     }
 
     public static function getColorspace($display)
     {
-        return self::get('display', $display, 'lcd');
+        return self::get('display', $display, self::DEFAULT_KEY_DISPLAY);
     }
 
     public static function getAvailableSizes(): array
