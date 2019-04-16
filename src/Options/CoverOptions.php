@@ -23,28 +23,28 @@ class CoverOptions
     private static $OPTIONS = [
         'size' => [ // size => width
             'small' => 60,
-            'medium' => 80,
+            self::DEFAULT_KEY_SIZE => 80,
             'large' => 110,
             'xlarge' => 150,
             'xxlarge' => 320
         ],
         'dpi' => [ // dpi => scale
             'mdpi' => 1.0,
-            'hdpi' => 1.5,
+            self::DEFAULT_KEY_DPI => 1.5,
             'xhdpi' => 2.0,
             'xxhdpi' => 3.0
         ],
         'format' => [
-            'jpg' => JpgBookCoverProvider::class,
+            self::DEFAULT_KEY_FORMAT => JpgBookCoverProvider::class,
             'png' => PngBookCoverProvider::class,
         ],
         'type' => [ // service_type => subdirectory
-            'service' => self::SUBDIRECTORY_NORMAL,
+            self::DEFAULT_KEY_TYPE => self::SUBDIRECTORY_NORMAL,
             'test' => self::SUBDIRECTORY_TEST
         ],
         'display' => [ // type => colorspace
             'epd' => self::COLORSPACE_GRAYSCALE,
-            'lcd' => self::COLORSPACE_TRUECOLOR,
+            self::DEFAULT_KEY_DISPLAY => self::COLORSPACE_TRUECOLOR,
         ]
     ];
 
