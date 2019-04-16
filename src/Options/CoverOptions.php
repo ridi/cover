@@ -14,11 +14,11 @@ class CoverOptions
     public const DEFAULT_KEY_TYPE = 'service';
     public const DEFAULT_KEY_DISPLAY = 'lcd';
 
+    public const COLORSPACE_GRAYSCALE = 'grayscale';
+    public const COLORSPACE_TRUECOLOR = 'truecolor';
+
     private const SUBDIRECTORY_NORMAL = '';
     private const SUBDIRECTORY_TEST = 'test';
-
-    private const COLORSPACE_GRAYSCALE = 'grayscale';
-    private const COLORSPACE_TRUECOLOR = 'truecolor';
 
     private static $OPTIONS = [
         'size' => [ // size => width
