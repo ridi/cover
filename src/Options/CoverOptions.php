@@ -8,37 +8,43 @@ use Ridibooks\Cover\BookCoverProvider\PngBookCoverProvider;
 
 class CoverOptions
 {
-    const SUBDIRECTORY_NORMAL = '';
-    const SUBDIRECTORY_TEST = 'test';
+    public const DEFAULT_KEY_SIZE = 'medium';
+    public const DEFAULT_KEY_DPI = 'hdpi';
+    public const DEFAULT_KEY_FORMAT = 'jpg';
+    public const DEFAULT_KEY_TYPE = 'service';
+    public const DEFAULT_KEY_DISPLAY = 'lcd';
 
-    const COLORSPACE_GRAYSCALE = 'grayscale';
-    const COLORSPACE_TRUECOLOR = 'truecolor';
+    public const COLORSPACE_GRAYSCALE = 'grayscale';
+    public const COLORSPACE_TRUECOLOR = 'truecolor';
+
+    private const SUBDIRECTORY_NORMAL = '';
+    private const SUBDIRECTORY_TEST = 'test';
 
     private static $OPTIONS = [
         'size' => [ // size => width
             'small' => 60,
-            'medium' => 80,
+            self::DEFAULT_KEY_SIZE => 80,
             'large' => 110,
             'xlarge' => 150,
             'xxlarge' => 320
         ],
         'dpi' => [ // dpi => scale
             'mdpi' => 1.0,
-            'hdpi' => 1.5,
+            self::DEFAULT_KEY_DPI => 1.5,
             'xhdpi' => 2.0,
             'xxhdpi' => 3.0
         ],
         'format' => [
-            'jpg' => JpgBookCoverProvider::class,
+            self::DEFAULT_KEY_FORMAT => JpgBookCoverProvider::class,
             'png' => PngBookCoverProvider::class,
         ],
         'type' => [ // service_type => subdirectory
-            'service' => self::SUBDIRECTORY_NORMAL,
+            self::DEFAULT_KEY_TYPE => self::SUBDIRECTORY_NORMAL,
             'test' => self::SUBDIRECTORY_TEST
         ],
         'display' => [ // type => colorspace
             'epd' => self::COLORSPACE_GRAYSCALE,
-            'lcd' => self::COLORSPACE_TRUECOLOR,
+            self::DEFAULT_KEY_DISPLAY => self::COLORSPACE_TRUECOLOR,
         ]
     ];
 
@@ -51,27 +57,27 @@ class CoverOptions
 
     public static function getWidth($size)
     {
-        return self::get('size', $size, 'medium');
+        return self::get('size', $size, self::DEFAULT_KEY_SIZE);
     }
 
     public static function getScale($dpi): float
     {
-        return self::get('dpi', $dpi, 'hdpi');
+        return self::get('dpi', $dpi, self::DEFAULT_KEY_DPI);
     }
 
     public static function getProviderClass($format): string
     {
-        return self::get('format', $format, 'jpg');
+        return self::get('format', $format, self::DEFAULT_KEY_FORMAT);
     }
 
     public static function getSubdirectory($service_type): string
     {
-        return self::get('type', $service_type, 'service');
+        return self::get('type', $service_type, self::DEFAULT_KEY_TYPE);
     }
 
     public static function getColorspace($display)
     {
-        return self::get('display', $display, 'lcd');
+        return self::get('display', $display, self::DEFAULT_KEY_DISPLAY);
     }
 
     public static function getAvailableSizes(): array
