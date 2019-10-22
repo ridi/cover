@@ -104,4 +104,14 @@ class CoverOptions
     {
         return array_keys(self::$OPTIONS['display']);
     }
+
+    public static function getOptionKeys(): array
+    {
+        return array_keys(self::$OPTIONS);
+    }
+
+    public static function getAvailableOptions(string $option_key): array
+    {
+        return array_keys(self::$OPTIONS[$option_key]);
+    }
 }
